@@ -1,0 +1,26 @@
+# Arquivos gerados pelo IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Logs e relatórios
+/log/
+/out/
+
+# Arquivos de configuração do Maven
+/target/
+
+# Arquivos de dependência do Maven
+/lib/
+
+# Eclipse
+.classpath
+.project
+.settings/
+.springBeans
+
+# Arquivos de configuração do JUnit
+.idea_modules/*.iml
+.idea_modules/*.ipr
+.idea_modules/*.iws
