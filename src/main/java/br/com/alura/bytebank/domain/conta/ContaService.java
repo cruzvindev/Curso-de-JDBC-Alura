@@ -2,23 +2,21 @@ package br.com.alura.bytebank.domain.conta;
 
 import br.com.alura.bytebank.ConnectionFactory;
 import br.com.alura.bytebank.domain.RegraDeNegocioException;
-import br.com.alura.bytebank.domain.cliente.Cliente;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
 public class ContaService {
 
-    private ConnectionFactory connection;
-    public ContaService(){
-       this.connection =  new ConnectionFactory();
-    }
-
     private Set<Conta> contas = new HashSet<>();
+
+    private ConnectionFactory connection;
+
+    public ContaService() {
+        this.connection = new ConnectionFactory();
+    }
 
     public Set<Conta> listarContasAbertas() {
         Connection conn = connection.recuperarConexao();
@@ -54,7 +52,8 @@ public class ContaService {
             throw new RegraDeNegocioException("Valor do deposito deve ser superior a zero!");
         }
 
-        conta.depositar(valor);
+       Connection conn = connection.recuperarConexao();
+        new ContaDAO(conn).alterar(conta.getNumero(), valor);
     }
 
     public void encerrar(Integer numeroDaConta) {
@@ -67,10 +66,12 @@ public class ContaService {
     }
 
     private Conta buscarContaPorNumero(Integer numero) {
-        return contas
-                .stream()
-                .filter(c -> c.getNumero() == numero)
-                .findFirst()
-                .orElseThrow(() -> new RegraDeNegocioException("Não existe conta cadastrada com esse número!"));
+        Connection conn = connection.recuperarConexao();
+        Conta conta = new ContaDAO(conn).listarPorNumero(numero);
+        if(conta != null) {
+            return conta;
+        } else {
+            throw new RegraDeNegocioException("Não existe conta cadastrada com esse número!");
+        }
     }
 }
